@@ -2,8 +2,9 @@
 
 Orientation for AI coding assistants (and humans) working in this project.
 This file is auto-loaded by Claude Code, Cursor, and similar tools — keep it short
-and true. For the full SDK reference (db, Bot API, fetch), see
-[docs/tgcloud-sdk.md](docs/tgcloud-sdk.md).
+and true.
+- Project SDK reference (db, Bot API, fetch): [docs/tgcloud-sdk.md](docs/tgcloud-sdk.md).
+- Telegram Bot API specification (methods, types, updates): [corefork.telegram.org/bots/api](https://corefork.telegram.org/bots/api) (canonical: [core.telegram.org/bots/api](https://core.telegram.org/bots/api)).
 
 ## What this project is
 
@@ -25,7 +26,7 @@ project root is yours (a mini-app front-end, config, docs).
 |-----------------------|-------------------------------------------------------------------|
 | `tgcloud/schema.js`   | Database schema — tables as **named exports**. One file.          |
 | `tgcloud/lib/`        | Shared modules. Subdirectories allowed (`lib/internal/util.js`).  |
-| `tgcloud/handlers/`   | Update handlers, **one level only**. Names match Telegram Bot API update types (`message`, `callback_query`, …). |
+| `tgcloud/handlers/`   | Update handlers, **one level only**. Names match Telegram Bot API `Update` fields (`message`, `callback_query`, `chat_join_request`, …). |
 | `tgcloud/endpoints/`  | Functions the Mini App calls (`POST /api/<name>`), **one level only**. |
 | `tgcloud.jsonc`       | Project config. Its `"static"` block names the build folder hosted as the Mini App. |
 | `docs/`               | Reference docs (this project's, for you). Not deployed.           |
@@ -101,16 +102,25 @@ itself: the database, the Bot API, secrets.
 - A handler module's `export default` is what the platform invokes, with the
   update's **payload** as the first argument — for `handlers/message` that's the
   `Message` (i.e. `update.message`), for `handlers/callback_query` the
-  `CallbackQuery`, and so on. The full `Update` (with `update_id`) is on the
-  second argument: `ctx.update`. An endpoint's `export default` gets
-  `(input, ctx)` — see *Endpoints* above.
+  `CallbackQuery`, for `handlers/chat_join_request` the `ChatJoinRequest`, and so on.
+  Names match fields of Telegram's [`Update`](https://corefork.telegram.org/bots/api#update) object.
+  The full `Update` (with `update_id`) is on the second argument: `ctx.update`.
+  An endpoint's `export default` gets `(input, ctx)` — see *Endpoints* above.
 
 ## Platform SDK (`import … from 'sdk'`)
 
 - **`db`** — the database (query builder + schema DSL). Full API: [docs/tgcloud-sdk.md](docs/tgcloud-sdk.md).
-- **`api`** — the Telegram Bot API. `api.<method>({...})` (e.g. `api.sendMessage`,
-  `api.getMe`) returns the **unwrapped** result and **throws `BotApiError`** on
-  failure (`import { BotApiError } from 'sdk'`; it has `.code`/`.description`/`.parameters`).
+- **`api`** — the Telegram Bot API client. Call any method as `api.<methodName>(params)`
+  ([Bot API Reference](https://corefork.telegram.org/bots/api)).
+  - **Methods & Params**: camelCase method name (`api.sendMessage`, `api.getMe`, `api.editMessageText`),
+    passing a single object with snake_case parameters matching the Bot API spec (`chat_id`, `reply_parameters`, `reply_markup`, etc.).
+  - **Envelope unwrapped**: returns the `result` directly on `{ ok: true }` — no `.ok`/`.result` wrapper.
+  - **Throws `BotApiError`**: on `{ ok: false }` (`import { BotApiError } from 'sdk'`).
+    Contains `.code` (HTTP/Telegram `error_code`, e.g. 400, 403, 429), `.description`, `.method`,
+    and `.parameters` ([ResponseParameters](https://corefork.telegram.org/bots/api#responseparameters), e.g. `retry_after`, `migrate_to_chat_id`).
+  - **Files**: `import { InputFile } from 'sdk'`. Pass `new InputFile(bytes, filename, { type })`
+    at any depth in params. Downloads: `await api.getFileContent(file_id)` (Uint8Array) or
+    `await api.getFileStream(file_id)` by `file_id` only (up to 20 MB).
 - **`fetch`** — outbound HTTP, web-`fetch`-like (`res.status/ok`, `res.json()`,
   `res.text()`, streaming via `for await`, redirects followed).
 - **`EndpointError`** — the one way an endpoint refuses a call (see *Endpoints*).

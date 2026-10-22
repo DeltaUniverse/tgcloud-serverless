@@ -49,14 +49,6 @@ export default async function (chatJoinRequest) {
     }
   }
 
-  if (!inviteLink) {
-    try {
-      inviteLink = await api.exportChatInviteLink({ chat_id: chat.id });
-    } catch {
-      inviteLink = "";
-    }
-  }
-
   await db.insert(joinRequest).values({
     userId: user_chat_id,
     msgId: diceMessage.message_id,

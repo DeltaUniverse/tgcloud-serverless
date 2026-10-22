@@ -20,6 +20,7 @@ export function forwardMessage(message, deliveryParameters) {
       chat_id,
       text: message.text,
       entities: message.entities,
+      link_preview_options: message.link_preview_options,
       reply_markup,
     });
   }
