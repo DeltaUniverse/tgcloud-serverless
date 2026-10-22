@@ -340,7 +340,8 @@ import {
 
 # Telegram Bot API (`api`)
 
-Official specification: [corefork.telegram.org/bots/api](https://corefork.telegram.org/bots/api)
+Official specification:
+[corefork.telegram.org/bots/api](https://corefork.telegram.org/bots/api)
 (canonical: [core.telegram.org/bots/api](https://core.telegram.org/bots/api)).
 
 `import { api, BotApiError } from 'sdk'`. Call any Bot API method as
@@ -359,9 +360,9 @@ await api.answerCallbackQuery({ callback_query_id, text: "Done" });
   API's snake_case names (`chat_id`, `message_id`, …).
 - **Failures throw `BotApiError`.** On `{ ok: false }` it throws; the error
   carries `.code` (Bot API `error_code` — 400/403/429/…), `.description`,
-  `.method`, and `.parameters` (Telegram `ResponseParameters` — e.g. `retry_after` on 429,
-  `migrate_to_chat_id`). Catch and inspect `.code` to handle an expected
-  failure:
+  `.method`, and `.parameters` (Telegram `ResponseParameters` — e.g.
+  `retry_after` on 429, `migrate_to_chat_id`). Catch and inspect `.code` to
+  handle an expected failure:
 
 ```js
 try {
