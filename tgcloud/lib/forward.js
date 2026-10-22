@@ -152,55 +152,5 @@ export function forwardMessage(message, deliveryParameters) {
     });
   }
 
-  if (message.poll) {
-    return api.sendPoll({
-      chat_id,
-      question: message.poll.question,
-      question_entities: message.poll.question_entities,
-      options: message.poll.options.map((option) => ({
-        text: option.text,
-        text_entities: option.text_entities,
-      })),
-      is_anonymous: message.poll.is_anonymous,
-      type: message.poll.type,
-      allows_multiple_answers: message.poll.allows_multiple_answers,
-      correct_option_id: message.poll.correct_option_id,
-      explanation: message.poll.explanation,
-      explanation_entities: message.poll.explanation_entities,
-      open_period: message.poll.open_period,
-      close_date: message.poll.close_date,
-      is_closed: message.poll.is_closed,
-      reply_markup,
-    });
-  }
-
-  if (message.dice) {
-    return api.sendDice({
-      chat_id,
-      emoji: message.dice.emoji,
-      reply_markup,
-    });
-  }
-
-  if (message.paid_media) {
-    return api.sendPaidMedia({
-      chat_id,
-      star_count: message.paid_media.star_count,
-      media: message.paid_media.paid_media,
-      caption: message.caption,
-      caption_entities: message.caption_entities,
-      show_caption_above_media: message.show_caption_above_media,
-      reply_markup,
-    });
-  }
-
-  if (message.game) {
-    return api.sendGame({
-      chat_id,
-      game_short_name: message.game.title,
-      reply_markup,
-    });
-  }
-
   return null;
 }
