@@ -135,3 +135,7 @@ node --check tgcloud/schema.js tgcloud/handlers/*.js tgcloud/lib/*.js
 - [tgcloud SDK Reference](docs/tgcloud-sdk.md)
 - [Agent & Contributor Orientation](AGENTS.md)
 - [Telegram Bot API Documentation](https://corefork.telegram.org/bots/api)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

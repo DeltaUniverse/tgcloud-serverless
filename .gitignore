@@ -1,1 +1,48 @@
+# Platform state
 .tgcloud/
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing and coverage
+coverage/
+*.lcov
+
+# Build outputs
+dist/
+build/
+out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Runtime & tool caches
+.npm/
+.yarn/
+.deno/
+.eslintcache
+
+# Editor & OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
