@@ -18,7 +18,8 @@ tgcloud/
 │   ├── message.js          # Start command and sudo evaluation sandbox
 │   └── my_chat_member.js   # Chat permissions validation and auto-leave guard
 ├── lib/                    # Shared runtime utility modules
-│   ├── constants.js        # Global configuration, credentials, and error codes
+│   ├── config.js           # User credentials, IDs, and bot username
+│   ├── constants.js        # Fixed system constants and error codes
 │   ├── dice.js             # Randomized Fisher-Yates inline keyboard generator
 │   ├── eval.js             # Async code evaluator and object serializer
 │   └── forward.js          # Typed message media forwarder
@@ -78,6 +79,24 @@ builder DSL:
   - `chat_id`: Target channel or group chat ID.
   - `invite_link`: Resolved chat invite link or username URL.
   - Index: `user_msg_idx` indexed on `(user_id, msg_id)`.
+
+## Configuration
+
+Before deploying, customize your ownership credentials and bot username in
+[`tgcloud/lib/config.js`](tgcloud/lib/config.js):
+
+```javascript
+export const BOT_USERNAME = "YourBotUsername"; // Bot username without '@'
+export const SUDO_USER_ID = 123456789; // Telegram User ID allowed to run sudo commands
+export const SUDO_CHAT_ID = -1001234567890; // Sudo channel or group chat ID
+```
+
+> [!IMPORTANT]
+> Update `BOT_USERNAME`, `SUDO_USER_ID`, and `SUDO_CHAT_ID` with your own
+> credentials before running `npx tgcloud push`. Fixed system values (message
+> length limits, API error codes) reside in
+> [`tgcloud/lib/constants.js`](tgcloud/lib/constants.js) and should remain
+> unchanged.
 
 ## Development & Deployment
 

@@ -3,13 +3,11 @@
  */
 import { api, BotApiError, db, fetch, InputFile } from "sdk";
 
+import { BOT_USERNAME, SUDO_CHAT_ID, SUDO_USER_ID } from "../lib/config.js";
 import {
   BOT_API_BAD_REQUEST,
-  BOT_USERNAME,
   CAPTION_PREVIEW_LENGTH,
   MAX_MESSAGE_LENGTH,
-  SUDO_CHAT_ID,
-  SUDO_USER_ID,
 } from "../lib/constants.js";
 import { evaluateCode, serialize } from "../lib/eval.js";
 import * as schema from "../schema.js";
