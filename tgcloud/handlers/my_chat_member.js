@@ -30,13 +30,12 @@ export default async function (chatMemberUpdated) {
         if (join_by_request) return;
       } catch (error) {
         if (
-          !(error instanceof BotApiError &&
-            (error.code === BOT_API_BAD_REQUEST ||
-              error.code === BOT_API_FORBIDDEN))
+          error instanceof BotApiError &&
+          (error.code === BOT_API_BAD_REQUEST || error.code === BOT_API_FORBIDDEN)
         ) {
-          throw error;
+          return;
         }
-        return;
+        throw error;
       }
     }
   } else {
@@ -47,11 +46,11 @@ export default async function (chatMemberUpdated) {
     await api.leaveChat({ chat_id: chat.id });
   } catch (error) {
     if (
-      !(error instanceof BotApiError &&
-        (error.code === BOT_API_BAD_REQUEST ||
-          error.code === BOT_API_FORBIDDEN))
+      error instanceof BotApiError &&
+      (error.code === BOT_API_BAD_REQUEST || error.code === BOT_API_FORBIDDEN)
     ) {
-      throw error;
+      return;
     }
+    throw error;
   }
 }

@@ -8,7 +8,7 @@ import { BOT_API_BAD_REQUEST } from "../lib/constants.js";
 import { joinRequest } from "../schema.js";
 
 /**
- * Handles callback queries for dice verification verification, approving or declining join requests.
+ * Handles callback queries for dice verification, approving or declining join requests.
  *
  * @param {Record<string, any>} callbackQuery - The Telegram CallbackQuery payload
  */
@@ -27,7 +27,6 @@ export default async function (callbackQuery) {
   if (
     message?.chat?.type !== "private" ||
     !message?.dice ||
-    !data ||
     !/^[1-6]$/.test(data)
   ) {
     return;
@@ -61,17 +60,18 @@ export default async function (callbackQuery) {
   };
   const isMatch = message.dice.value === Number(data);
 
-  const resolveRequest =
-    (isMatch
-      ? api.approveChatJoinRequest(target)
-      : api.declineChatJoinRequest(target)).catch((error) => {
-        if (
-          error instanceof BotApiError && error.code === BOT_API_BAD_REQUEST
-        ) {
-          return null;
-        }
-        throw error;
-      });
+  const apiCall = isMatch
+    ? api.approveChatJoinRequest(target)
+    : api.declineChatJoinRequest(target);
+
+  const resolveRequest = apiCall.catch((error) => {
+    if (
+      error instanceof BotApiError && error.code === BOT_API_BAD_REQUEST
+    ) {
+      return null;
+    }
+    throw error;
+  });
 
   const editMarkup = api.editMessageReplyMarkup({
     chat_id: record.userId,

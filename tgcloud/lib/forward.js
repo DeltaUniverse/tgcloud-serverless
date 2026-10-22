@@ -1,6 +1,7 @@
 /**
- * @fileoverview Comprehensive media forwarder for Telegram Business messages.
- * Supports all Telegram Bot API media types based on corefork.telegram.org/bots/api specifications.
+ * @fileoverview Media forwarder for Telegram Business messages.
+ * Supports text, sticker, voice, video_note, photo, video, animation,
+ * document, audio, contact, venue, and location message types.
  */
 import { api } from "sdk";
 
@@ -57,16 +58,14 @@ export function forwardMessage(message, deliveryParameters) {
     });
   }
 
-  if (Array.isArray(message.photo) && message.photo.length > 0) {
-    const photo = message.photo.at(-1);
-    if (photo?.file_id) {
-      return api.sendPhoto({
-        ...mediaParams,
-        photo: photo.file_id,
-        show_caption_above_media: message.show_caption_above_media,
-        has_spoiler: message.has_media_spoiler,
-      });
-    }
+  const photo = message.photo?.at(-1);
+  if (photo?.file_id) {
+    return api.sendPhoto({
+      ...mediaParams,
+      photo: photo.file_id,
+      show_caption_above_media: message.show_caption_above_media,
+      has_spoiler: message.has_media_spoiler,
+    });
   }
 
   if (message.video?.file_id) {
