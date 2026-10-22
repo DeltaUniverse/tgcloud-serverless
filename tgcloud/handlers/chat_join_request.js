@@ -17,17 +17,13 @@ export default async function (chatJoinRequest) {
   const { chat, user_chat_id } = chatJoinRequest;
 
   let diceMessage;
-  let chatDetails;
 
   try {
-    [diceMessage, chatDetails] = await Promise.all([
-      api.sendDice({
-        chat_id: user_chat_id,
-        emoji: "🎲",
-        reply_markup: createDiceKeyboard(),
-      }),
-      api.getChat({ chat_id: chat.id }),
-    ]);
+    diceMessage = await api.sendDice({
+      chat_id: user_chat_id,
+      emoji: "🎲",
+      reply_markup: createDiceKeyboard(),
+    });
   } catch (error) {
     if (
       error instanceof BotApiError &&
@@ -38,9 +34,20 @@ export default async function (chatJoinRequest) {
     throw error;
   }
 
-  const username = chatDetails?.username || chat.username;
-  let inviteLink = username ? `https://t.me/${username}` : "";
-  if (!inviteLink) inviteLink = chatDetails?.invite_link || "";
+  let inviteLink = chat.username ? `https://t.me/${chat.username}` : "";
+
+  if (!inviteLink) {
+    try {
+      const chatDetails = await api.getChat({ chat_id: chat.id });
+      if (chatDetails?.username) {
+        inviteLink = `https://t.me/${chatDetails.username}`;
+      } else if (chatDetails?.invite_link) {
+        inviteLink = chatDetails.invite_link;
+      }
+    } catch {
+      inviteLink = "";
+    }
+  }
 
   if (!inviteLink) {
     try {
