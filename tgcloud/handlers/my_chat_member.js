@@ -31,7 +31,8 @@ export default async function (chatMemberUpdated) {
       } catch (error) {
         if (
           error instanceof BotApiError &&
-          (error.code === BOT_API_BAD_REQUEST || error.code === BOT_API_FORBIDDEN)
+          (error.code === BOT_API_BAD_REQUEST ||
+            error.code === BOT_API_FORBIDDEN)
         ) {
           return;
         }
