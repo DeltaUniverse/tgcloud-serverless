@@ -3,7 +3,7 @@
  */
 import { api, BotApiError } from "sdk";
 
-import { BOT_API_BAD_REQUEST } from "../lib/constants.js";
+import { BOT_API_BAD_REQUEST, BOT_API_FORBIDDEN } from "../lib/constants.js";
 import { forwardMessage } from "../lib/forward.js";
 
 /**
@@ -21,7 +21,10 @@ export default async function (message) {
       business_connection_id: message.business_connection_id,
     });
   } catch (error) {
-    if (error instanceof BotApiError && error.code === BOT_API_BAD_REQUEST) {
+    if (
+      error instanceof BotApiError &&
+      (error.code === BOT_API_BAD_REQUEST || error.code === BOT_API_FORBIDDEN)
+    ) {
       return;
     }
     throw error;
@@ -46,9 +49,6 @@ export default async function (message) {
 
   const deliveryParameters = {
     chat_id: user.id,
-    entities: message.entities,
-    caption: message.caption,
-    caption_entities: message.caption_entities,
     reply_markup: {
       inline_keyboard: [...initialKeyboard, userActionRow],
     },
@@ -70,7 +70,10 @@ export default async function (message) {
       message_ids: [message.message_id],
     });
   } catch (error) {
-    if (error instanceof BotApiError && error.code === BOT_API_BAD_REQUEST) {
+    if (
+      error instanceof BotApiError &&
+      (error.code === BOT_API_BAD_REQUEST || error.code === BOT_API_FORBIDDEN)
+    ) {
       return;
     }
     throw error;

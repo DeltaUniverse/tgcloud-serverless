@@ -76,9 +76,9 @@ export default async function (callbackQuery) {
   const editMarkup = api.editMessageReplyMarkup({
     chat_id: record.userId,
     message_id: record.msgId,
-    reply_markup: {
-      inline_keyboard: [[{ text: "Open", url: record.inviteLink }]],
-    },
+    reply_markup: record.inviteLink
+      ? { inline_keyboard: [[{ text: "Open", url: record.inviteLink }]] }
+      : undefined,
   }).catch((error) => {
     if (error instanceof BotApiError && error.code === BOT_API_BAD_REQUEST) {
       return null;
