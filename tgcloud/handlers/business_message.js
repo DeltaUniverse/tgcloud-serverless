@@ -13,7 +13,7 @@ import { forwardMessage } from "../lib/forward.js";
  * @param {Record<string, any>} message - The Telegram Message payload from a business connection
  */
 export default async function (message) {
-  if (!message.from || message.from.is_bot) return;
+  if (!message.from) return;
 
   let connection;
   try {
